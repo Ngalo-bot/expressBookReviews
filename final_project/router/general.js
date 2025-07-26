@@ -3,17 +3,67 @@ let books = require("./booksdb.js");
 let isValid = require("./auth_users.js").isValid;
 let users = require("./auth_users.js").users;
 const public_users = express.Router();
+const axios = require('axios');
+
+const getBooksByTitleAsync = async (title) => {
+    try {
+        const response = await axios.get(`http://localhost:5000/title/${title}`); 
+        console.log("Books with title:", response.data);
+    } catch (error) {
+        console.error("Error fetching books by title:", error);
+    }
+};
+
+
+getBooksByTitleAsync('Fairy tales'); 
+
+const getBooksByAuthorAsync = async (author) => {
+    try {
+        const response = await axios.get(`http://localhost:5000/author/${author}`); 
+        console.log("Books by author:", response.data);
+    } catch (error) {
+        console.error("Error fetching books by author:", error);
+    }
+};
+
+
+getBooksByAuthorAsync('Chinua Achebe'); 
+
+const getBookByISBNAsync = async (isbn) => {
+    try {
+        const response = await axios.get(`http://localhost:5000/isbn/${isbn}`); 
+        console.log("Book details:", response.data);
+    } catch (error) {
+        console.error("Error fetching book details:", error);
+    }
+};
+
+
+getBookByISBNAsync('1'); 
+
+
+const getBooksAsync = async () => {
+    try {
+        const response = await axios.get('http://localhost:5000/'); 
+        console.log("Books available:", response.data);
+    } catch (error) {
+        console.error("Error fetching books:", error);
+    }
+};
+
+
+getBooksAsync();
 
 
 public_users.post("/register", (req,res) => {
-    const { username, password } = req.body; // Extract username and password from request body
+    const { username, password } = req.body; 
 
-    // Validate inputs
+    
     if (!username || !password) {
       return res.status(400).json({ message: "Username and password are required." });
     }
   
-    // Check if the username already exists
+   
     if (users[username]) {
       return res.status(409).json({ message: "Username already exists." }); // Conflict status
     }
